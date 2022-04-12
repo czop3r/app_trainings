@@ -18,7 +18,6 @@ import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.com
 import { StopTrainingComponent } from './training/current-training/stop-training.component';
 import { AuthService } from './auth/auth.service';
 import { TrainingService } from './training/training.service';
-import { DataBaseService } from './dataBase.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { UIService } from './shared/UI.service';
 import { AuthInterceptorService } from './auth/auth.interceptor.service';
@@ -47,8 +46,7 @@ import { AuthInterceptorService } from './auth/auth.interceptor.service';
   ],
   providers: [
     AuthService, 
-    TrainingService, 
-    DataBaseService, 
+    TrainingService,  
     UIService,
     {
       provide: HTTP_INTERCEPTORS, 
