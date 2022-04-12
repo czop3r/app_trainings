@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { DataBaseService } from 'src/app/dataBase.service';
 
 import { Exercise } from '../exercise.model';
 import { TrainingService } from '../training.service';
@@ -15,7 +14,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   exercises: Exercise[] = [];
   private subscription: Subscription;
 
-  constructor(private trainingService: TrainingService, private db: DataBaseService) { }
+  constructor(private trainingService: TrainingService) { }
 
   ngOnInit(): void {
     this.subscription = this.trainingService.fetchAvailableExercises().subscribe(
