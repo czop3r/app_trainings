@@ -18,7 +18,7 @@ export interface AuthResponseData {
 
 @Injectable()
 export class AuthService {
-    private apiKey: string = 'AIzaSyAnf9En6oEIGOLpR4Vx25bM986OoYaFFGM';
+    private apiKey: string = '';
     private tokenExpirationTimer: any;
     authChange = new Subject<boolean>();
     user = new BehaviorSubject<User>(null);
