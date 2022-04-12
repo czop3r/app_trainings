@@ -1,0 +1,13 @@
+.cancelled {
+    color: red;
+    font-weight: bold;
+}
+
+.completed {
+    color: green;
+    font-weight: bold;
+}
+
+mat-header-cell:first-of-type, mat-cell:first-of-type {
+    padding-left: 5vw;
+}
