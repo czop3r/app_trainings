@@ -9,16 +9,24 @@ import { AuthService } from 'src/app/auth/auth.service';
   styleUrls: ['./sidenav-list.component.css']
 })
 export class SidenavListComponent implements OnInit, OnDestroy {
-  private subscription: Subscription
   @Output() sidenavClose = new EventEmitter<void>();
   isAuth: boolean = false;
+  private sub$ = new Subscription();
 
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.subscription = this.authService.user.subscribe(user => {
-      this.isAuth = !!user;
-    })
+    this.sub$.add(
+      this.authService.user.subscribe(user => {
+        this.isAuth = !!user;
+      })
+    ) ;
+  }
+
+  ngOnDestroy(): void {
+    if(this.sub$) {
+      this.sub$.unsubscribe();
+    }
   }
 
   onClose() {
@@ -29,9 +37,4 @@ export class SidenavListComponent implements OnInit, OnDestroy {
     this.onClose();
     this.authService.logout();
   }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
 }

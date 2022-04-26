@@ -17,8 +17,7 @@ export class StopTrainingComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) private passedData: any) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.progress = this.passedData.progress;
   }
-
 }

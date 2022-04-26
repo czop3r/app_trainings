@@ -1,7 +1,8 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { BehaviorSubject, catchError, Subject, tap, throwError } from "rxjs";
+import { BehaviorSubject, catchError, Observable, Subject, tap, throwError } from "rxjs";
+import { environment } from "src/environments/environment";
 
 import { UIService } from "../shared/UI.service";
 import { AuthData } from "./auth-data.model";
@@ -16,12 +17,15 @@ export interface AuthResponseData {
     registered?: boolean;
 }
 
-@Injectable()
+const api_path = 'https://identitytoolkit.googleapis.com/v1/';
+
+@Injectable({
+    providedIn: 'root'
+})
 export class AuthService {
-    private apiKey: string = '';
-    private tokenExpirationTimer: any;
     authChange = new Subject<boolean>();
     user = new BehaviorSubject<User>(null);
+    private tokenExpirationTimer: any;
 
 
     constructor(
@@ -30,8 +34,8 @@ export class AuthService {
         private uiService: UIService
         ) {}
     
-    registerUser(authData: AuthData) {
-        return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + this.apiKey, {
+    registerUser(authData: AuthData): Observable<AuthResponseData> {
+        return this.http.post<AuthResponseData>(api_path + 'accounts:signUp?key=' + environment.firebaseAPIKey, {
             email: authData.email,
             password: authData.password,
             returnSecureToken: true
@@ -51,8 +55,8 @@ export class AuthService {
         );
     }
     
-    login(authData: AuthData) {
-        return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + this.apiKey, {
+    login(authData: AuthData): Observable<AuthResponseData> {
+        return this.http.post<AuthResponseData>(api_path + 'accounts:signInWithPassword?key=' + environment.firebaseAPIKey, {
             email: authData.email,
             password: authData.password,
             returnSecureToken: true
@@ -116,10 +120,6 @@ export class AuthService {
         }, expirationDuration);
     }
 
-    isAuth() {
-        return this.authChange;
-    }
-
     private authSuccessfully() {
         this.authChange.next(true);
         this.router.navigate(['/training']);
@@ -145,7 +145,7 @@ export class AuthService {
         localStorage.setItem('userData', JSON.stringify(user));
     }
 
-    private handleError(errorRes: HttpErrorResponse) {
+    private handleError(errorRes: HttpErrorResponse): void {
         let errorMessage = 'An unknow error occurred!';
         if (!errorRes.error || !errorRes.error.error) {
             return this.uiService.openSnackBar(errorMessage, 'close', 3000);

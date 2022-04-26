@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -9,23 +9,23 @@ import { AuthService } from '../auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
-  private sub: Subscription;
+export class LoginComponent implements OnDestroy {
+  private sub$ = new Subscription();
 
   constructor(private authService: AuthService) { }
 
-  ngOnInit(): void {
+  ngOnDestroy() {
+    if(this.sub$) {
+      this.sub$.unsubscribe()
+    }
   }
 
   onSubmit(form: NgForm) {
-    this.sub = this.authService.login({
-      email: form.value.email,
-      password: form.value.password
-    }).subscribe();
+    this.sub$.add(
+      this.authService.login({
+        email: form.value.email,
+        password: form.value.password
+      }).subscribe()
+    );
   }
-
-    ngOnDestroy(): void {
-    this.sub.unsubscribe()
-  }
-
 }

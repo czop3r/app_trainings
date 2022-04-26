@@ -16,7 +16,7 @@ export class CurrentTrainingComponent implements OnInit{
 
   constructor(private dialog: MatDialog, private trainingService: TrainingService) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.startOrResumeTimer()
   }
   

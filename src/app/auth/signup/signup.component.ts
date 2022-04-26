@@ -10,25 +10,28 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit, OnDestroy{
-  private sub: Subscription;
+  private sub$ = new Subscription();
   maxDate;
 
   constructor(private authService: AuthService) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.maxDate = new Date();
     this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);
   }
 
+  ngOnDestroy() {
+    if(this.sub$) {
+      this.sub$.unsubscribe()
+    }
+  }
+
   onSubmit(form: NgForm) {
-    this.sub = this.authService.registerUser({
-      email: form.value.email,
-      password: form.value.password
-    }).subscribe();
+    this.sub$.add(
+      this.authService.registerUser({
+        email: form.value.email,
+        password: form.value.password
+      }).subscribe()
+    );
   }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe()
-  }
-
 }

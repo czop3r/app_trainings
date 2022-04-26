@@ -12,23 +12,27 @@ import { TrainingService } from '../training.service';
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
   exercises: Exercise[] = [];
-  private subscription: Subscription;
+  private sub$ = new Subscription();
 
   constructor(private trainingService: TrainingService) { }
 
-  ngOnInit(): void {
-    this.subscription = this.trainingService.fetchAvailableExercises().subscribe(
-      (ex: Exercise[]) => {
-        this.exercises = ex;
-      }
+  ngOnInit() {
+    this.sub$.add(
+      this.trainingService.fetchAvailableExercises().subscribe(
+        (ex: Exercise[]) => {
+          this.exercises = ex;
+        }
+      ) 
     );
+  }
+
+  ngOnDestroy() {
+    if(this.sub$) {
+      this.sub$.unsubscribe();
+    }
   }
 
   onStartTraining(form: NgForm){
     this.trainingService.startExercise(form.value.exercise)
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 }
